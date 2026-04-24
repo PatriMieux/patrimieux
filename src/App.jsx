@@ -272,8 +272,7 @@ function getMarkerLeft(index) {
   return `${start + ((end - start) * index) / steps}%`;
 }
 
-function getMonthKey(date = new new Date()) {
-  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+function getMonthKey(date =   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
 }
 
 function formatSnapshotDate(dateValue) {
@@ -304,10 +303,9 @@ function getLatestSnapshot(history = []) {
 }
 
 function createSnapshot(data, options = {}) {
-  const date = options.date || new new new new Date().toISOString();
-  const dateObject = new Date(date);
-  const month = options.month || getMonthKey(Number.isNaN(dateObject.getTime()) ? new new Date() : dateObject);
-  const total = getTotal(data.accounts || []);
+  const date = options.date || new new new Date().toIconst dateObject = new Date(date);
+  const month = options.month || getMonthKey(Number.isNaN(dateObject.getTime()) ? new Date() : dateObject);
+  getTotal(data.accounts || []);
 
   return {
     id: options.id || uid(),
@@ -361,10 +359,10 @@ function formatMonthKey(key) {
 
 function getLastMonthKeys(count = 12) {
   const keys = [];
-  const current = new new Date();
+  const current = new Date();
   current.setDate(1);
 
-  for (let i = count - 1; i >= 0; i -= 1) {
+  for (- 1; i >= 0; i -= 1) {
     const date = new Date(current.getFullYear(), current.getMonth() - i, 1);
     keys.push(getMonthKey(date));
   }
@@ -396,13 +394,12 @@ function createDefaultData() {
     monthlyPlan: 600,
     annualYield: 6,
     projectionYears: 10,
-    createdAt: new new new new Date().toISOString(),
-    updatedAt: new new new new Date().toISOString(),
+    createdAt: new new new Date().toISOString(),
+    updatedAt: new new new Datg(),
   };
 }
 
-function upsertMonthlySnapshot(data) {
-  const month = getMonthKey();
+function upsertMonthlySnapshot(data)th = getMonthKey();
   const existingHistory = normalizeHistory(data.history || [], data.accounts || []);
   const hasCurrentMonthAutoSnapshot = existingHistory.some((snapshot) => snapshot.month === month && snapshot.type === "auto");
   const history = hasCurrentMonthAutoSnapshot
@@ -412,12 +409,12 @@ function upsertMonthlySnapshot(data) {
   return {
     ...data,
     history: sortSnapshots(history),
-    updatedAt: new new new new Date().toISOString(),
+    updatedAt: new new new Date().toISOString(),
   };
 }
 
 function normalizeData(raw) {
-  const defaults = createDefaultData();
+  const defaults = cta();
   const data = raw && typeof raw === "object" ? raw : {};
   return upsertMonthlySnapshot({
     ...defaults,
@@ -940,8 +937,7 @@ function SnapshotEvolutionCard({ data, currentTotal }) {
 function getPeriodKey(date, mode) {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getnew Date()).padStart(2, "0");
-  if (mode === "day") return `${year}-${month}-${day}`;
+  const day = String(date.getDate()).padStart(2, "0")== "day") return `${year}-${month}-${day}`;
   if (mode === "month") return `${year}-${month}`;
   return `${year}`;
 }
@@ -966,12 +962,10 @@ function aggregateSnapshotsByMode(history, mode, currentTotal) {
       const date = new Date(snapshot.date || `${snapshot.month || getMonthKey()}-01T12:00:00.000Z`);
       return {
         id: snapshot.id,
-        dateObj: Number.isNaN(date.getTime()) ? new new Date() : date,
+        dateObj: Number.isNaN(date.getTime()) ? new Date() : date,
         total: getSnapshotTotal(snapshot),
         type: snapshot.type || "auto",
-      };
-    })
-    .filter((snapshot) => Number.isFinite(snapshot.total));
+      }filter((snapshot) => Number.isFinite(snapshot.total));
 
   const buckets = new Map();
   normalized.forEach((snapshot) => {
@@ -989,12 +983,12 @@ function aggregateSnapshotsByMode(history, mode, currentTotal) {
   const points = Array.from(buckets.values()).sort((a, b) => a.dateObj - b.dateObj);
   const latest = points[points.length - 1];
   if (!latest || Math.abs(latest.total - currentTotal) > 0.01) {
-    const now = new new Date();
+    const now = new Date();
     points.push({
       id: "current-live",
       key: `current-${now.getTime()}`,
       label: "Actuel",
-      dateObj: now,
+    ,
       total: currentTotal,
       type: "live",
     });
@@ -1433,15 +1427,14 @@ function Dashboard({ data, setData, onReset, onModifySetup, onLogout }) {
         pseudo: account.pseudo,
         email: account.email,
         password: account.password,
-        createdAt: new new new new Date().toISOString(),
+        createdAt: new new new Date().toISOString(),
       },
       ownerName: account.pseudo,
       configured: false,
-      updatedAt: new new new new Date().toISOString(),
-    }));
+      updatedAt: new new new Date().toISOSt);
     setToast("Compte créé, configure maintenant ton patrimoine initial");
   }
-  const [snapshotMenuOpen, setSnapshotMenuOpen] = useState(false);
+  const [snapshotMenuOpen, setSnapshoseState(false);
   const total = getTotal(data.accounts);
   const levelData = getLevelData(total);
   const visibleAccounts = data.accounts.filter((account) => Number(account.amount) > 0);
@@ -1477,21 +1470,20 @@ function Dashboard({ data, setData, onReset, onModifySetup, onLogout }) {
         ...current,
         accounts: nextAccounts,
         transactions: [
-          { id: uid(), date: new new new new Date().toISOString(), accountId, amount, note },
+          { id: uid(), date: new new new Date().toISOString(), accountId, amount, note },
           ...(current.transactions || []),
         ].slice(0, 80),
       };
 
       return {
-        ...nextData,
-        history: sortSnapshots([
+        ...nextDataory: sortSnapshots([
           ...(nextData.history || []),
           createSnapshot(nextData, {
             type: "auto",
             label: "Snapshot automatique",
           }),
         ]),
-        updatedAt: new new new new Date().toISOString(),
+        updatedAt: new new new Date().toISOString(),
       };
     });
 
@@ -1499,8 +1491,7 @@ function Dashboard({ data, setData, onReset, onModifySetup, onLogout }) {
     setToast("Versement ajouté + snapshot automatique créé");
   }
 
-  function addWithdrawal({ accountId, amount, note }) {
-    if (!amount || amount <= 0) return;
+  function addWithdrawal({ accountId, amount, nf (!amount || amount <= 0) return;
 
     const selectedAccount = data.accounts.find((account) => account.id === accountId);
     if (!selectedAccount) return;
@@ -1521,21 +1512,20 @@ function Dashboard({ data, setData, onReset, onModifySetup, onLogout }) {
         ...current,
         accounts: nextAccounts,
         transactions: [
-          { id: uid(), date: new new new new Date().toISOString(), accountId, amount: -amount, note: note || "Retrait" },
+          { id: uid(), date: new new new Date().toISOString(), accountId, amount: -amount, note: note || "Retrait" },
           ...(current.transactions || []),
         ].slice(0, 80),
       };
 
       return {
-        ...nextData,
-        history: sortSnapshots([
+        ...nextDataory: sortSnapshots([
           ...(nextData.history || []),
           createSnapshot(nextData, {
             type: "auto",
             label: "Snapshot automatique",
           }),
         ]),
-        updatedAt: new new new new Date().toISOString(),
+        updatedAt: new new new Date().toISOString(),
       };
     });
 
@@ -1544,8 +1534,7 @@ function Dashboard({ data, setData, onReset, onModifySetup, onLogout }) {
   }
 
   function editAccount(id, amount, objective) {
-    updateData((current) => ({
-      ...current,
+    updateData((current) => (rent,
       accounts: current.accounts.map((account) => account.id === id ? { ...account, amount, objective } : account),
     }));
     setEditingAccount(null);
@@ -1576,18 +1565,17 @@ function Dashboard({ data, setData, onReset, onModifySetup, onLogout }) {
         ...current,
         accounts: nextAccounts,
         transactions: [
-          { id: uid(), date: new new new new Date().toISOString(), accountId, amount, note: "Ajout de placement" },
+          { id: uid(), date: new new new Date().toISOString(), accountId, amount, note: "Ajout de placement" },
           ...(current.transactions || []),
         ].slice(0, 80),
       };
 
       return {
         ...nextData,
-        history: sortSnapshots([
-          ...(nextData.history || []),
+        history: sortSnapshots([(nextData.history || []),
           createSnapshot(nextData, { type: "auto", label: "Snapshot automatique" }),
         ]),
-        updatedAt: new new new new Date().toISOString(),
+        updatedAt: new new new Date().toISOString(),
       };
     });
 
@@ -1596,7 +1584,7 @@ function Dashboard({ data, setData, onReset, onModifySetup, onLogout }) {
   }
 
   function deleteGoal(id) {
-    updateData((current) => ({ ...current, goals: current.goals.filter((goal) => goal.id !== id) }));
+    updateData((current) => ({ ...current, goals: current.goals.filter((goa!== id) }));
   }
 
   function exportData() {
@@ -1630,14 +1618,14 @@ function Dashboard({ data, setData, onReset, onModifySetup, onLogout }) {
         ...(current.history || []),
         createSnapshot(current, { type: "manual", label: "Snapshot manuel" }),
       ]),
-      updatedAt: new new new new Date().toISOString(),
+      updatedAt: new new new Date().toISOString(),
     }));
     setToast("Snapshot actualisé manuellement");
   }
 
   function restoreSnapshot(snapshotId) {
     const snapshot = (data.history || []).find((item) => item.id === snapshotId);
-    if (!snapshot || !Array.isArray(snapshot.accounts)) return;
+    if (!snapshot || !Array.isArray(nts)) return;
     if (!window.confirm("Revenir à ce snapshot ? Les montants actuels des comptes seront remplacés.")) return;
 
     updateData((current) => ({
@@ -1668,7 +1656,7 @@ function Dashboard({ data, setData, onReset, onModifySetup, onLogout }) {
             })
           : item
       ))),
-      updatedAt: new new new new Date().toISOString(),
+      updatedAt: new new new Date().toISOString(),
     }));
     setToast("Snapshot écrasé avec l’état actuel");
   }
@@ -1677,8 +1665,8 @@ function Dashboard({ data, setData, onReset, onModifySetup, onLogout }) {
     if (!window.confirm("Supprimer définitivement ce snapshot ?")) return;
     setData((current) => ({
       ...current,
-      history: (current.history || []).filter((item) => item.id !== snapshotId),
-      updatedAt: new new new new Date().toISOString(),
+      his.history || []).filter((item) => item.id !== snapshotId),
+      updatedAt: new new new Date().toISOString(),
     }));
     setToast("Snapshot supprimé");
   }
@@ -1688,7 +1676,7 @@ function Dashboard({ data, setData, onReset, onModifySetup, onLogout }) {
       {toast && <div className="toast" onAnimationEnd={() => setToast("")}>{toast}</div>}
 
       <aside className="sidebar">
-        <div className="brand"><span>✨</span><strong>PatriMieux</strong></div>
+      me="brand"><span>✨</span><strong>PatriMieux</strong></div>
         
           <button className={"navItem active"} type="button">
             <span>🏠</span>
@@ -2698,7 +2686,7 @@ export default function App() {
       objective: Number(account.objective) || 0,
       color: account.color,
       gradient: account.gradient,
-      updated_at: new new new new Date().toISOString(),
+      updated_at: new new new Date().toISOString(),
     }));
 
     if (accountsPayload.length) {
@@ -2707,12 +2695,11 @@ export default function App() {
 
     const snapshotsPayload = (nextData.history || []).map((snapshot) => ({
       id: snapshot.id,
-      user_id: user.id,
-      total: Number(snapshot.total) || 0,
+      user_id   total: Number(snapshot.total) || 0,
       type: snapshot.type === "manual" ? "manuel" : "automatique",
       label: snapshot.label || (snapshot.type === "manual" ? "Snapshot manuel" : "Snapshot automatique"),
       accounts: snapshot.accounts || [],
-      created_at: snapshot.date || new new new new Date().toISOString(),
+      created_at: snapshot.date || new new new Date().toISOString(),
     }));
 
     if (snapshotsPayload.length) {
@@ -2722,11 +2709,11 @@ export default function App() {
     const transactionsPayload = (nextData.transactions || []).map((transaction) => ({
       id: transaction.id,
       user_id: user.id,
-      account_key: transaction.accountId,
+   : transaction.accountId,
       amount: Number(transaction.amount) || 0,
       type: Number(transaction.amount) < 0 ? "withdrawal" : "deposit",
       note: transaction.note || null,
-      created_at: transaction.date || new new new new Date().toISOString(),
+      created_at: transaction.date || new new new Date().toISOString(),
     }));
 
     if (transactionsPayload.length) {
@@ -2738,7 +2725,7 @@ export default function App() {
 
   function setDataAndSync(updater) {
     setData((current) => {
-      const rawNext = typeof updater === "function" ? updater(current) : updater;
+      const rawNext = typeof updater === "function" ent) : updater;
       const next = rawNext?.configured ? upsertMonthlySnapshot(rawNext) : rawNext;
       syncDataToCloud(next);
       return next;
@@ -2761,28 +2748,28 @@ export default function App() {
     const user = signUpData?.user;
     if (user) {
       setLoading(false);
-      await supabase.from("profiles").upsert({ id: user.id, pseudo, updated_at: new new new new Date().toISOString() });
+      await supabase.from("profiles").upsert({ id: user.id, pseudo, updated_at: new new new Date().toISOString() });
       setUserName(pseudo);
       setData({
         ...createDefaultData(),
         userAccount: { id: user.id, pseudo, email: account.email },
         userName: pseudo,
         configured: false,
-        updatedAt: new new new new Date().toISOString(),
+        updatedAt: new new new Date().toISOString(),
       });
     }
 
     return true;
   }
 
-  async function loginLocalAccount(credentials) {
+  async functiocount(credentials) {
     const { data: loginData, error } = await supabase.auth.signInWithPassword({
       email: credentials.email,
       password: credentials.password,
     });
 
     if (error || !loginData?.user) return false;
-    await loadCloudData(loginData.user);
+    await loadCloudDatar);
     return true;
   }
 
@@ -2804,7 +2791,7 @@ export default function App() {
     });
 
     setData(nextData);
-    await supabase.from("profiles").upsert({ id: user.id, pseudo: nextData.userName, updated_at: new new new new Date().toISOString() });
+    await supabase.from("profiles").upsert({ id: user.id, pseudo: nextData.userName, updated_at: new new new Date().toISOString() });
     await syncDataToCloud(nextData);
   }
 
@@ -2821,9 +2808,7 @@ export default function App() {
       per: "0",
       pee: "0",
     });
-  }
-
-  function modifySetup() {
+  }odifySetup() {
     setUserName(data.userName || data.userAccount?.pseudo || "Mathias");
     setSetupValues(Object.fromEntries((data.accounts || BASE_ACCOUNTS).map((account) => [account.id, String(account.amount).replace(".", ",")])));
     setData((current) => ({ ...current, configured: false }));
