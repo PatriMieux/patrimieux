@@ -2544,14 +2544,20 @@ export default function App() {
         const { data: sessionData, error } = await supabase.auth.getSession();
         if (error) console.warn("Erreur session Supabase", error);
         const user = sessionData?.session?.user;
+
+        clearTimeout(safetyTimer);
+        if (mounted) setLoading(false);
+
         if (mounted && user) {
-          await loadCloudData(user);
+          loadCloudData(user);
         }
       } catch (error) {
         console.error("Erreur init session Supabase", error);
-      } finally {
         clearTimeout(safetyTimer);
-        if (mounted) setLoading(false);
+        if (mounted) {
+          setLoading(false);
+          setAuthPage("landing");
+        }
       }
     }
 
@@ -2848,7 +2854,19 @@ export default function App() {
   if (loading) {
     return (
       <div style={{ minHeight: "100vh", display: "grid", placeItems: "center", background: "#ecfdf5", color: "#071033", fontFamily: "Inter, system-ui" }}>
-        <strong>Chargement de PatriMieux...</strong>
+        <div style={{ textAlign: "center" }}>
+          <strong>Chargement de PatriMieux...</strong>
+          <button
+            type="button"
+            onClick={() => {
+              setLoading(false);
+              setAuthPage("landing");
+            }}
+            style={{ display: "block", margin: "18px auto 0", border: 0, borderRadius: 14, padding: "12px 16px", fontWeight: 900, background: "#10b981", color: "white" }}
+          >
+            Forcer l’accueil
+          </button>
+        </div>
       </div>
     );
   }
