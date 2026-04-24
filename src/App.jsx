@@ -2531,11 +2531,28 @@ export default function App() {
   useEffect(() => {
     let mounted = true;
 
+    const safetyTimer = setTimeout(() => {
+      if (mounted) {
+        console.warn("Chargement Supabase trop long : retour à l’accueil");
+        setLoading(false);
+        setAuthPage("landing");
+      }
+    }, 4500);
+
     async function initSession() {
-      const { data: sessionData } = await supabase.auth.getSession();
-      const user = sessionData?.session?.user;
-      if (mounted && user) await loadCloudData(user);
-      if (mounted) setLoading(false);
+      try {
+        const { data: sessionData, error } = await supabase.auth.getSession();
+        if (error) console.warn("Erreur session Supabase", error);
+        const user = sessionData?.session?.user;
+        if (mounted && user) {
+          await loadCloudData(user);
+        }
+      } catch (error) {
+        console.error("Erreur init session Supabase", error);
+      } finally {
+        clearTimeout(safetyTimer);
+        if (mounted) setLoading(false);
+      }
     }
 
     initSession();
