@@ -2653,7 +2653,7 @@ export default function App() {
           email: user.email,
         },
         userName: pseudo,
-        configured: (cloudAccounts || []).length > 0,
+        configured: (cloudAccounts || []).length > 0 || (cloudSnapshots || []).length > 0,
         accounts: mappedAccounts,
         history: mappedSnapshots,
         transactions: mappedTransactions,
