@@ -272,7 +272,7 @@ function getMarkerLeft(index) {
   return `${start + ((end - start) * index) / steps}%`;
 }
 
-function getMonthKey(date = new Date()) {
+function getMonthKey(date = new new Date()) {
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
 }
 
@@ -304,9 +304,9 @@ function getLatestSnapshot(history = []) {
 }
 
 function createSnapshot(data, options = {}) {
-  const date = options.date || new new Date().toISOString();
+  const date = options.date || new new new new Date().toISOString();
   const dateObject = new Date(date);
-  const month = options.month || getMonthKey(Number.isNaN(dateObject.getTime()) ? new Date() : dateObject);
+  const month = options.month || getMonthKey(Number.isNaN(dateObject.getTime()) ? new new Date() : dateObject);
   const total = getTotal(data.accounts || []);
 
   return {
@@ -361,7 +361,7 @@ function formatMonthKey(key) {
 
 function getLastMonthKeys(count = 12) {
   const keys = [];
-  const current = new Date();
+  const current = new new Date();
   current.setDate(1);
 
   for (let i = count - 1; i >= 0; i -= 1) {
@@ -396,8 +396,8 @@ function createDefaultData() {
     monthlyPlan: 600,
     annualYield: 6,
     projectionYears: 10,
-    createdAt: new new Date().toISOString(),
-    updatedAt: new new Date().toISOString(),
+    createdAt: new new new new Date().toISOString(),
+    updatedAt: new new new new Date().toISOString(),
   };
 }
 
@@ -412,7 +412,7 @@ function upsertMonthlySnapshot(data) {
   return {
     ...data,
     history: sortSnapshots(history),
-    updatedAt: new new Date().toISOString(),
+    updatedAt: new new new new Date().toISOString(),
   };
 }
 
@@ -940,7 +940,7 @@ function SnapshotEvolutionCard({ data, currentTotal }) {
 function getPeriodKey(date, mode) {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
+  const day = String(date.getnew Date()).padStart(2, "0");
   if (mode === "day") return `${year}-${month}-${day}`;
   if (mode === "month") return `${year}-${month}`;
   return `${year}`;
@@ -966,7 +966,7 @@ function aggregateSnapshotsByMode(history, mode, currentTotal) {
       const date = new Date(snapshot.date || `${snapshot.month || getMonthKey()}-01T12:00:00.000Z`);
       return {
         id: snapshot.id,
-        dateObj: Number.isNaN(date.getTime()) ? new Date() : date,
+        dateObj: Number.isNaN(date.getTime()) ? new new Date() : date,
         total: getSnapshotTotal(snapshot),
         type: snapshot.type || "auto",
       };
@@ -989,7 +989,7 @@ function aggregateSnapshotsByMode(history, mode, currentTotal) {
   const points = Array.from(buckets.values()).sort((a, b) => a.dateObj - b.dateObj);
   const latest = points[points.length - 1];
   if (!latest || Math.abs(latest.total - currentTotal) > 0.01) {
-    const now = new Date();
+    const now = new new Date();
     points.push({
       id: "current-live",
       key: `current-${now.getTime()}`,
@@ -1433,11 +1433,11 @@ function Dashboard({ data, setData, onReset, onModifySetup, onLogout }) {
         pseudo: account.pseudo,
         email: account.email,
         password: account.password,
-        createdAt: new new Date().toISOString(),
+        createdAt: new new new new Date().toISOString(),
       },
       ownerName: account.pseudo,
       configured: false,
-      updatedAt: new new Date().toISOString(),
+      updatedAt: new new new new Date().toISOString(),
     }));
     setToast("Compte créé, configure maintenant ton patrimoine initial");
   }
@@ -1477,7 +1477,7 @@ function Dashboard({ data, setData, onReset, onModifySetup, onLogout }) {
         ...current,
         accounts: nextAccounts,
         transactions: [
-          { id: uid(), date: new new Date().toISOString(), accountId, amount, note },
+          { id: uid(), date: new new new new Date().toISOString(), accountId, amount, note },
           ...(current.transactions || []),
         ].slice(0, 80),
       };
@@ -1491,7 +1491,7 @@ function Dashboard({ data, setData, onReset, onModifySetup, onLogout }) {
             label: "Snapshot automatique",
           }),
         ]),
-        updatedAt: new new Date().toISOString(),
+        updatedAt: new new new new Date().toISOString(),
       };
     });
 
@@ -1521,7 +1521,7 @@ function Dashboard({ data, setData, onReset, onModifySetup, onLogout }) {
         ...current,
         accounts: nextAccounts,
         transactions: [
-          { id: uid(), date: new new Date().toISOString(), accountId, amount: -amount, note: note || "Retrait" },
+          { id: uid(), date: new new new new Date().toISOString(), accountId, amount: -amount, note: note || "Retrait" },
           ...(current.transactions || []),
         ].slice(0, 80),
       };
@@ -1535,7 +1535,7 @@ function Dashboard({ data, setData, onReset, onModifySetup, onLogout }) {
             label: "Snapshot automatique",
           }),
         ]),
-        updatedAt: new new Date().toISOString(),
+        updatedAt: new new new new Date().toISOString(),
       };
     });
 
@@ -1576,7 +1576,7 @@ function Dashboard({ data, setData, onReset, onModifySetup, onLogout }) {
         ...current,
         accounts: nextAccounts,
         transactions: [
-          { id: uid(), date: new new Date().toISOString(), accountId, amount, note: "Ajout de placement" },
+          { id: uid(), date: new new new new Date().toISOString(), accountId, amount, note: "Ajout de placement" },
           ...(current.transactions || []),
         ].slice(0, 80),
       };
@@ -1587,7 +1587,7 @@ function Dashboard({ data, setData, onReset, onModifySetup, onLogout }) {
           ...(nextData.history || []),
           createSnapshot(nextData, { type: "auto", label: "Snapshot automatique" }),
         ]),
-        updatedAt: new new Date().toISOString(),
+        updatedAt: new new new new Date().toISOString(),
       };
     });
 
@@ -1630,7 +1630,7 @@ function Dashboard({ data, setData, onReset, onModifySetup, onLogout }) {
         ...(current.history || []),
         createSnapshot(current, { type: "manual", label: "Snapshot manuel" }),
       ]),
-      updatedAt: new new Date().toISOString(),
+      updatedAt: new new new new Date().toISOString(),
     }));
     setToast("Snapshot actualisé manuellement");
   }
@@ -1668,7 +1668,7 @@ function Dashboard({ data, setData, onReset, onModifySetup, onLogout }) {
             })
           : item
       ))),
-      updatedAt: new new Date().toISOString(),
+      updatedAt: new new new new Date().toISOString(),
     }));
     setToast("Snapshot écrasé avec l’état actuel");
   }
@@ -1678,7 +1678,7 @@ function Dashboard({ data, setData, onReset, onModifySetup, onLogout }) {
     setData((current) => ({
       ...current,
       history: (current.history || []).filter((item) => item.id !== snapshotId),
-      updatedAt: new new Date().toISOString(),
+      updatedAt: new new new new Date().toISOString(),
     }));
     setToast("Snapshot supprimé");
   }
@@ -2698,7 +2698,7 @@ export default function App() {
       objective: Number(account.objective) || 0,
       color: account.color,
       gradient: account.gradient,
-      updated_at: new new Date().toISOString(),
+      updated_at: new new new new Date().toISOString(),
     }));
 
     if (accountsPayload.length) {
@@ -2712,7 +2712,7 @@ export default function App() {
       type: snapshot.type === "manual" ? "manuel" : "automatique",
       label: snapshot.label || (snapshot.type === "manual" ? "Snapshot manuel" : "Snapshot automatique"),
       accounts: snapshot.accounts || [],
-      created_at: snapshot.date || new new Date().toISOString(),
+      created_at: snapshot.date || new new new new Date().toISOString(),
     }));
 
     if (snapshotsPayload.length) {
@@ -2726,7 +2726,7 @@ export default function App() {
       amount: Number(transaction.amount) || 0,
       type: Number(transaction.amount) < 0 ? "withdrawal" : "deposit",
       note: transaction.note || null,
-      created_at: transaction.date || new new Date().toISOString(),
+      created_at: transaction.date || new new new new Date().toISOString(),
     }));
 
     if (transactionsPayload.length) {
@@ -2761,14 +2761,14 @@ export default function App() {
     const user = signUpData?.user;
     if (user) {
       setLoading(false);
-      await supabase.from("profiles").upsert({ id: user.id, pseudo, updated_at: new new Date().toISOString() });
+      await supabase.from("profiles").upsert({ id: user.id, pseudo, updated_at: new new new new Date().toISOString() });
       setUserName(pseudo);
       setData({
         ...createDefaultData(),
         userAccount: { id: user.id, pseudo, email: account.email },
         userName: pseudo,
         configured: false,
-        updatedAt: new new Date().toISOString(),
+        updatedAt: new new new new Date().toISOString(),
       });
     }
 
@@ -2804,7 +2804,7 @@ export default function App() {
     });
 
     setData(nextData);
-    await supabase.from("profiles").upsert({ id: user.id, pseudo: nextData.userName, updated_at: new new Date().toISOString() });
+    await supabase.from("profiles").upsert({ id: user.id, pseudo: nextData.userName, updated_at: new new new new Date().toISOString() });
     await syncDataToCloud(nextData);
   }
 
