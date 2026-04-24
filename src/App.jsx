@@ -2558,78 +2558,100 @@ export default function App() {
   async function loadCloudData(user) {
     setLoading(true);
 
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("pseudo")
-      .eq("id", user.id)
-      .maybeSingle();
+    try {
+      if (!user?.id) {
+        setData(createDefaultData());
+        setAuthPage("landing");
+        return;
+      }
 
-    const { data: cloudAccounts = [] } = await supabase
-      .from("accounts")
-      .select("*")
-      .eq("user_id", user.id)
-      .order("created_at", { ascending: true });
+      const { data: profile, error: profileError } = await supabase
+        .from("profiles")
+        .select("pseudo")
+        .eq("id", user.id)
+        .maybeSingle();
 
-    const { data: cloudSnapshots = [] } = await supabase
-      .from("snapshots")
-      .select("*")
-      .eq("user_id", user.id)
-      .order("created_at", { ascending: true });
+      if (profileError) console.warn("Erreur profile Supabase", profileError);
 
-    const { data: cloudTransactions = [] } = await supabase
-      .from("transactions")
-      .select("*")
-      .eq("user_id", user.id)
-      .order("created_at", { ascending: false });
+      const { data: cloudAccounts = [], error: accountsError } = await supabase
+        .from("accounts")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: true });
 
-    const mappedAccounts = BASE_ACCOUNTS.map((base) => {
-      const found = cloudAccounts.find((account) => account.account_key === base.id || account.name === base.name);
-      return {
-        ...base,
-        amount: parseMoney(found?.balance ?? base.amount),
-        objective: parseMoney(found?.objective ?? base.objective),
-      };
-    });
+      if (accountsError) console.warn("Erreur accounts Supabase", accountsError);
 
-    const mappedSnapshots = cloudSnapshots.map((snapshot) => ({
-      id: snapshot.id,
-      month: getMonthKey(new Date(snapshot.created_at)),
-      date: snapshot.created_at,
-      type: snapshot.type === "manuel" ? "manual" : "auto",
-      label: snapshot.label || (snapshot.type === "manuel" ? "Snapshot manuel" : "Snapshot automatique"),
-      total: parseMoney(snapshot.total),
-      accounts: Array.isArray(snapshot.accounts)
-        ? snapshot.accounts
-        : mappedAccounts.map((account) => ({ id: account.id, amount: account.amount, objective: account.objective })),
-    }));
+      const { data: cloudSnapshots = [], error: snapshotsError } = await supabase
+        .from("snapshots")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: true });
 
-    const mappedTransactions = cloudTransactions.map((transaction) => ({
-      id: transaction.id,
-      date: transaction.created_at,
-      accountId: transaction.account_key || BASE_ACCOUNTS.find((account) => account.name === transaction.account_name)?.id || "pea",
-      amount: parseMoney(transaction.amount),
-      note: transaction.note || (transaction.type === "withdrawal" ? "Retrait" : "Versement"),
-    }));
+      if (snapshotsError) console.warn("Erreur snapshots Supabase", snapshotsError);
 
-    const pseudo = profile?.pseudo || user.user_metadata?.pseudo || user.email?.split("@")[0] || "Utilisateur";
+      const { data: cloudTransactions = [], error: transactionsError } = await supabase
+        .from("transactions")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false });
 
-    const nextData = normalizeData({
-      ...createDefaultData(),
-      userAccount: {
-        id: user.id,
-        pseudo,
-        email: user.email,
-      },
-      userName: pseudo,
-      configured: cloudAccounts.length > 0,
-      accounts: mappedAccounts,
-      history: mappedSnapshots,
-      transactions: mappedTransactions,
-    });
+      if (transactionsError) console.warn("Erreur transactions Supabase", transactionsError);
 
-    setUserName(pseudo);
-    setData(nextData);
-    setLoading(false);
+      const mappedAccounts = BASE_ACCOUNTS.map((base) => {
+        const found = (cloudAccounts || []).find((account) => account.account_key === base.id || account.name === base.name);
+        return {
+          ...base,
+          amount: parseMoney(found?.balance ?? base.amount),
+          objective: parseMoney(found?.objective ?? base.objective),
+        };
+      });
+
+      const mappedSnapshots = (cloudSnapshots || []).map((snapshot) => ({
+        id: snapshot.id,
+        month: getMonthKey(new Date(snapshot.created_at)),
+        date: snapshot.created_at,
+        type: snapshot.type === "manuel" ? "manual" : "auto",
+        label: snapshot.label || (snapshot.type === "manuel" ? "Snapshot manuel" : "Snapshot automatique"),
+        total: parseMoney(snapshot.total),
+        accounts: Array.isArray(snapshot.accounts)
+          ? snapshot.accounts
+          : mappedAccounts.map((account) => ({ id: account.id, amount: account.amount, objective: account.objective })),
+      }));
+
+      const mappedTransactions = (cloudTransactions || []).map((transaction) => ({
+        id: transaction.id,
+        date: transaction.created_at,
+        accountId: transaction.account_key || "pea",
+        amount: parseMoney(transaction.amount),
+        note: transaction.note || (transaction.type === "withdrawal" ? "Retrait" : "Versement"),
+      }));
+
+      const pseudo = profile?.pseudo || user.user_metadata?.pseudo || user.email?.split("@")[0] || "Utilisateur";
+
+      const nextData = normalizeData({
+        ...createDefaultData(),
+        userAccount: {
+          id: user.id,
+          pseudo,
+          email: user.email,
+        },
+        userName: pseudo,
+        configured: (cloudAccounts || []).length > 0,
+        accounts: mappedAccounts,
+        history: mappedSnapshots,
+        transactions: mappedTransactions,
+      });
+
+      setUserName(pseudo);
+      setData(nextData);
+    } catch (error) {
+      console.error("Erreur chargement PatriMieux", error);
+      alert("Erreur de chargement Supabase. Regarde la console pour le détail.");
+      setData(createDefaultData());
+      setAuthPage("landing");
+    } finally {
+      setLoading(false);
+    }
   }
 
   async function getCurrentUser() {
