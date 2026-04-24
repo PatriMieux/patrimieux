@@ -2579,7 +2579,7 @@ export default function App() {
   }, []);
 
   async function loadCloudData(user) {
-    setLoading(true);
+    // Chargement en arrière-plan : on ne bloque jamais l'interface sur cet écran.
 
     try {
       if (!user?.id) {
@@ -2759,8 +2759,7 @@ export default function App() {
     }
 
     const user = signUpData?.user;
-    if (user) {
-      await supabase.from("profiles").upsert({ id: user.id, pseudo, updated_at: new Date().toISOString() });
+     Date().toISOString() });
       setUserName(pseudo);
       setData({
         ...createDefaultData(),
